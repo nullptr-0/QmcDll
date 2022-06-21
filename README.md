@@ -1,7 +1,7 @@
 # QmcDll
 Qmc Encryption & Decryption Dynamic Link Library
 
-#How to use
+# How to use
 ```flow
 st=>Other operations
 op=>Place the QmcDll.lib in yout project directory
