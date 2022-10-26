@@ -113,7 +113,7 @@ private:
         else
         {
             keySize = (*(uint32_t*)(buf_tag.str().data()));
-            if (keySize < 0x300)
+            if (keySize < 0x500)
             {
                 if (pswFileName != "")
                 {
@@ -371,6 +371,7 @@ void QmcDecode::DecodeMapRC4() {
     if (!QmcDecryptKey(rawKeyBuf, out))
     {
         std::cout << "file is not supported(New Embedded Key format. Please downgrade your app.)" << std::endl;
+        std::cout << out.data() << "\n\n" << rawKeyBuf.data() << std::endl;
         decFailure++;
         return;
     }
@@ -566,6 +567,7 @@ void QmcEncode::EncodeStatic()
 }
 
 void QmcEncode::EncodeMapRC4() {
+    srand(time(0));
     std::vector<uint8_t> v;
     v.resize(fileSizeG(f));
     f.seekg(0, std::ios::beg);
@@ -594,7 +596,6 @@ void QmcEncode::EncodeMapRC4() {
     }
     else if (cipherType == "QTag")
     {
-        srand(time(0));
         if (rand() % 2 == 0)
         {
             QmcRC4Cipher c(out, 1);
@@ -612,7 +613,7 @@ void QmcEncode::EncodeMapRC4() {
         return;
     }
 
-    if (!QmcEncryptKey(out, rawKeyBuf))
+    if (!QmcEncryptKey(out, rawKeyBuf, rand() % 2))
     {
         std::cout << "Key encryption failed." << std::endl;
         encFailure++;
