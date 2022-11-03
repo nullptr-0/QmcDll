@@ -371,7 +371,6 @@ void QmcDecode::DecodeMapRC4() {
     if (!QmcDecryptKey(rawKeyBuf, out))
     {
         std::cout << "file is not supported(New Embedded Key format. Please downgrade your app.)" << std::endl;
-        std::cout << out.data() << "\n\n" << rawKeyBuf.data() << std::endl;
         decFailure++;
         return;
     }
