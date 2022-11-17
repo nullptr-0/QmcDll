@@ -113,7 +113,7 @@ private:
         else
         {
             keySize = (*(uint32_t*)(buf_tag.str().data()));
-            if (keySize < 0x500)
+            if (keySize < 0x400)
             {
                 if (pswFileName != "")
                 {
@@ -620,28 +620,20 @@ void QmcEncode::EncodeMapRC4() {
     }
     if (cipherType == "QTag")
     {
-        rawKeyBuf.resize(rawKeyBuf.size() + 4);
-        for (size_t i = 0; i < 4; i++)
-        {
-            if (i % 2 == 0)
-            {
-                rawKeyBuf[rawKeyBuf.size() - 4 + i] = ',';
-            }
-            else
-            {
-                rawKeyBuf[rawKeyBuf.size() - 4 + i] = '0';
-            }
-        }
+        rawKeyBuf.push_back(',');
+        rawKeyBuf.push_back('0');
+        rawKeyBuf.push_back(',');
+        rawKeyBuf.push_back('2');
     }
 
     std::string fn = fileName.substr(0, fileName.find_last_of(".")) + ".m" + ext;
     std::cout << "Output:\n" << fn << std::endl;
-    std::ofstream of(fn, std::ios::out | std::ios::binary | std::ios::trunc);
+    std::ofstream of(fn, std::ios::out | std::ios::binary);
     of.write((char*)v.data(), v.size());
     if (pswFileName != "")
     {
         of.close();
-        of.open(pswFileName, std::ios::out | std::ios::binary | std::ios::trunc);
+        of.open(pswFileName, std::ios::out | std::ios::binary);
     }
     of.write((char*)rawKeyBuf.data(), rawKeyBuf.size());
     if (cipherType == "QTag")

@@ -201,7 +201,7 @@ public:
             const char WordList[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             srand(time(0));
             uint32_t number = 0;
-            while (number <= 300 || number >= 574)
+            while (number <= 300 || number >= 512)
             {
                 number = rand();
             }

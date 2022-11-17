@@ -57,7 +57,7 @@ bool decryptV2Key(std::vector<uint8_t> key, std::vector<uint8_t>& outVec)
     outVec.resize(base64::decoded_size(out.size()));
     auto n = base64::decode(outVec.data(), (const char*)(out.data()), out.size()).first;
 
-    if (n < 8)
+    if (n < 16)
     {
         outVec.resize(0);
         //EncV2 key size is too small.
@@ -70,7 +70,7 @@ bool decryptV2Key(std::vector<uint8_t> key, std::vector<uint8_t>& outVec)
 
 bool encryptV2Key(std::vector<uint8_t> key, std::vector<uint8_t>& outVec)
 {
-    if (key.size() < 8)
+    if (key.size() < 16)
     {
         outVec.resize(0);
         //EncV2 key size is too small.
