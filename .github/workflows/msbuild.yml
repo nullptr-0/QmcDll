@@ -10,6 +10,9 @@ on:
 env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
+  # Configuration type to build.
+  BUILD_CONFIGURATION: Release
+
 
 permissions:
   actions: read
@@ -21,9 +24,9 @@ jobs:
     runs-on: windows-latest
     
     strategy:
-      # Configuration type to build.
+      # Configuration platform to build.
       matrix:
-        BUILD_CONFIGURATION: [ Release|x86, Release|x64 ]
+        PLATFORM_CONFIGURATION: [ x86, x64 ]
 
     steps:
     - name: Checkout repository
@@ -45,7 +48,7 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{matrix.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:Platform=${{matrix.PLATFORM_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
