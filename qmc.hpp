@@ -426,10 +426,7 @@ void QmcDecode::DecodeCache()
     }
     for (size_t i = 0; i < v.size(); i++) {
         v[i] ^= 0xf4;
-        if (v[i] <= 0x3f) v[i] = v[i] * 4;
-        else if (v[i] <= 0x7f) v[i] = (v[i] - 0x40) * 4 + 1;
-        else if (v[i] <= 0xbf) v[i] = (v[i] - 0x80) * 4 + 2;
-        else v[i] = (v[i] - 0xc0) * 4 + 3;
+        v[i] = ((v[i] & 0b00111111) << 2) | (v[i] >> 6); // rol 2
     }
     std::string fn = fileName.substr(0, fileName.find_last_of(".")) + extViaExt(fileName);
     std::cout << "Output:\n" << fn << std::endl;
@@ -667,43 +664,7 @@ void QmcEncode::EncodeCache()
         return;
     }
     for (size_t i = 0; i < v.size(); i++) {
-        auto remainder = v[i] % 4;
-        if (remainder == 0)
-        {
-            v[i] = v[i] / 4;
-            if (v[i] > 0x3f)
-            {
-                encFailure++;
-                return;
-            }
-        }
-        else if (remainder == 1)
-        {
-            v[i] = (v[i] - 1) / 4 + 0x40;
-            if (v[i] > 0x7f)
-            {
-                encFailure++;
-                return;
-            }
-        }
-        else if (remainder == 2)
-        {
-            v[i] = (v[i] - 2) / 4 + 0x80;
-            if (v[i] > 0xbf)
-            {
-                encFailure++;
-                return;
-            }
-        }
-        else
-        {
-            v[i] = (v[i] - 3) / 4 + 0xc0;
-            if (v[i] <= 0xbf)
-            {
-                encFailure++;
-                return;
-            }
-        }
+        v[i] = (v[i] >> 2) | (v[i] << 6); // rol 2
         v[i] ^= 0xf4;
     }
     std::string fn = fileName.substr(0, fileName.find_last_of(".")) + ".cache";
